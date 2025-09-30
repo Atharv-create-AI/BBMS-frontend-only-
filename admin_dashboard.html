@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body id="admin-dashboard">
+<body id="admin_dashboard">
     <div class="admin-layout">
         <button id="admin-menu-btn" class="admin-mobile-menu-btn">
             <svg style="width:1.5rem; height:1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -39,6 +39,10 @@
                     <div class="card-header">Inventory Overview</div>
                     <div class="card-body" id="dashboard-inventory-table"></div>
                 </div>
+                <div class="card">
+                    <div class="card-header">Donation & Usage Trends (Last 5 Months)</div>
+                    <div class="card-body" id="dashboard-trends-table"></div>
+                </div>
             </section>
             <section id="admin-inventory" class="admin-section">
                 <h1 class="section-title" style="text-align: left;">Blood Inventory</h1>
@@ -60,28 +64,38 @@
             <section id="admin-campaigns" class="admin-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h1 class="section-title" style="text-align: left; margin: 0;">Manage Campaigns</h1>
-                    <button class="btn btn-primary" onclick="showModal('add-campaign-modal')">Add Campaign</button>
+                    <button class="btn btn-primary" onclick="showModal()">Add Campaign</button>
                  </div>
                  <div class="card"><div class="card-body"><div class="table-container"><table id="admin-campaigns-table"></table></div></div></div>
             </section>
             <section id="admin-reports" class="admin-section">
                 <h1 class="section-title" style="text-align: left;">Reports & Analytics</h1>
-                <div class="card"><div class="card-header">Donation & Usage Trends (Last 7 Months)</div><div class="card-body" id="dashboard-trends-table"></div></div>
+                <div class="card">
+                    <div class="card-header">Comprehensive Donation Log</div>
+                    <div class="card-body"><div class="table-container" id="report-donation-log-table"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Campaign Summary Report</div>
+                    <div class="card-body"><div class="table-container" id="report-campaign-summary-table"></div></div>
+                </div>
             </section>
         </main>
     </div>
     <div id="main-modal" class="modal-overlay">
-        <div class="modal-content"><div id="add-campaign-modal" class="modal-body"><h2 style="font-size:1.5rem; font-weight:700; margin-bottom:1rem;">Add New Campaign</h2>
-        <form id="add-campaign-form" onsubmit="handleAddCampaign(event)">
-        <input name="name" type="text" placeholder="Campaign Name" class="form-input" required>
-        <input name="location" type="text" placeholder="Location" class="form-input" required>
-        <input name="date" type="date" class="form-input" required>
-        <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
-        <button type="button" class="btn" style="background-color:#e0e0e0;" onclick="hideModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Create</button></div></form></div></div>
+        <div class="modal-content">
+            <h2 style="font-size:1.5rem; font-weight:700; margin-bottom:1rem;">Add New Campaign</h2>
+            <form id="add-campaign-form" onsubmit="handleAddCampaign(event)">
+                <input name="name" type="text" placeholder="Campaign Name" class="form-input" required>
+                <input name="location" type="text" placeholder="Location" class="form-input" required>
+                <input name="date" type="date" class="form-input" required>
+                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
+                    <button type="button" class="btn" style="background-color:#e0e0e0; color:#212121" onclick="hideModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
-</html>
-
-    
+                                       </html>
+                     

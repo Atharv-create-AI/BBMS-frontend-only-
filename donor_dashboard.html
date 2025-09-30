@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - Life Care</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="donor-dashboard">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <div class="text-2xl font-bold text-red-600">Donor Portal</div>
+                </div>
+                <div><button class="btn btn-primary" onclick="logout()">Logout</button></div>
+            </div>
+        </header>
+        <main class="section">
+            <div class="container">
+                 <h1 id="donor-welcome-message" class="section-title" style="text-align:left;">Welcome!</h1>
+                 <div style="display:grid; grid-template-columns: 1fr; gap: 2rem; md:grid-template-columns: 2fr 1fr;">
+                    <div>
+                         <div class="card">
+                            <div class="card-header">Schedule a Donation</div>
+                            <div class="card-body">
+                                <form id="donor-appointment-form" onsubmit="handleAppointmentSubmit(event)">
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <input name="date" type="date" class="form-input" required>
+                                        <select name="location" class="form-input" required>
+                                            <option value="">Select Location</option>
+                                            <option value="Downtown Plaza">Downtown Plaza</option>
+                                            <option value="Greenwood Park">Greenwood Park</option>
+                                            <option value="Central Hospital">Central Hospital</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Book Appointment</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">My Appointments</div>
+                            <div class="card-body"><div class="table-container"><table id="donor-appointments-table"></table></div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">My Donation History</div>
+                            <div class="card-body"><div class="table-container"><table id="donor-history-table"></table></div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="card">
+                            <div class="card-header">Health Information</div>
+                            <div class="card-body" id="donor-health-info" style="display:flex; flex-direction:column; gap:1rem;"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">Upcoming Donation Camps</div>
+                            <div class="card-body"><div class="table-container"><table id="donor-campaigns-table"></table></div></div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

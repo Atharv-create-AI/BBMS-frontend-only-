@@ -1,0 +1,87 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Life Care</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="admin-dashboard" class="admin-layout">
+        <button id="admin-menu-btn" class="admin-mobile-menu-btn">
+            <svg style="width:1.5rem; height:1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <svg style="width:2rem; height:2rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                <span>Admin</span>
+            </div>
+            <nav>
+                <a href="#" class="admin-nav-link active" onclick="showAdminSection('admin-dashboard-main')">Dashboard</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-inventory')">Inventory</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-requests')">Requests</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-patient-management')">Patient Management</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-donor-management')">Donor Management</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-campaigns')">Campaigns</a>
+                <a href="#" class="admin-nav-link" onclick="showAdminSection('admin-reports')">Reports</a>
+            </nav>
+            <div class="admin-sidebar-footer">
+                 <a href="#" class="admin-nav-link" onclick="logout()">Logout</a>
+            </div>
+        </aside>
+        <main class="admin-main-content">
+            <section id="admin-dashboard-main" class="admin-section active">
+                <h1 class="section-title" style="text-align: left;">Dashboard</h1>
+                <div id="admin-kpi-cards" class="kpi-grid"></div>
+                <div class="card">
+                    <div class="card-header">Inventory Overview</div>
+                    <div class="card-body" id="dashboard-inventory-table"></div>
+                </div>
+            </section>
+            <section id="admin-inventory" class="admin-section">
+                <h1 class="section-title" style="text-align: left;">Blood Inventory</h1>
+                <div class="card"><div class="card-body"><div class="table-container"><table id="admin-inventory-table"></table></div></div></div>
+            </section>
+            <section id="admin-requests" class="admin-section">
+                <h1 class="section-title" style="text-align: left;">Blood Requests</h1>
+                 <div class="card"><div class="card-body"><div class="table-container"><table id="admin-requests-table"></table></div></div></div>
+            </section>
+            <section id="admin-patient-management" class="admin-section">
+                <h1 class="section-title" style="text-align: left;">Patient Management</h1>
+                <div class="card"><div class="card-header">Patient Information</div><div class="card-body"><div class="table-container"><table id="admin-patients-info-table"></table></div></div></div>
+            </section>
+            <section id="admin-donor-management" class="admin-section">
+                <h1 class="section-title" style="text-align: left;">Donor Management</h1>
+                <div class="card"><div class="card-header">Donor Information</div><div class="card-body"><div class="table-container"><table id="admin-donors-info-table"></table></div></div></div>
+                 <div class="card"><div class="card-header">Donation History</div><div class="card-body"><div class="table-container"><table id="admin-donors-history-table"></table></div></div></div>
+            </section>
+            <section id="admin-campaigns" class="admin-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h1 class="section-title" style="text-align: left; margin: 0;">Manage Campaigns</h1>
+                    <button class="btn btn-primary" onclick="showModal('add-campaign-modal')">Add Campaign</button>
+                 </div>
+                 <div class="card"><div class="card-body"><div class="table-container"><table id="admin-campaigns-table"></table></div></div></div>
+            </section>
+            <section id="admin-reports" class="admin-section">
+                <h1 class="section-title" style="text-align: left;">Reports & Analytics</h1>
+                <div class="card"><div class="card-header">Donation & Usage Trends (Last 7 Months)</div><div class="card-body" id="dashboard-trends-table"></div></div>
+            </section>
+        </main>
+    </div>
+    <div id="main-modal" class="modal-overlay">
+        <div class="modal-content"><div id="add-campaign-modal" class="modal-body"><h2 style="font-size:1.5rem; font-weight:700; margin-bottom:1rem;">Add New Campaign</h2>
+        <form id="add-campaign-form" onsubmit="handleAddCampaign(event)">
+        <input name="name" type="text" placeholder="Campaign Name" class="form-input" required>
+        <input name="location" type="text" placeholder="Location" class="form-input" required>
+        <input name="date" type="date" class="form-input" required>
+        <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
+        <button type="button" class="btn" style="background-color:#e0e0e0;" onclick="hideModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button></div></form></div></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

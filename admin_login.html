@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Life Care</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">Life Care</a>
+                <div class="subtitle">blood bank management system</div>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container" style="max-width: 500px;">
+                <div class="portal-content">
+                    <!-- Admin Login Form -->
+                    <div class="form-box login-form">
+                        <div class="form-box-header">
+                            <h2>Admin Login</h2>
+                            <p>Enter your administrator credentials.</p>
+                        </div>
+                        <form onsubmit="event.preventDefault(); handleLogin('admin', this)">
+                            <input type="email" placeholder="Email" class="form-input" value="admin@lifecare.com" required>
+                            <input type="password" placeholder="Password" class="form-input" value="password" required>
+                            <p class="form-error" id="admin-login-error"></p>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">Login</button>
+                        </form>
+                        <div class="form-links">
+                             <p>Don't have an account? <a href="#" onclick="toggleRegister(true)">Register here</a></p>
+                        </div>
+                    </div>
+                    <!-- Admin Register Form -->
+                    <div class="form-box register-form" style="display: none;">
+                         <div class="form-box-header">
+                             <h2>Create Admin Account</h2>
+                             <p>Setup your blood bank portal.</p>
+                         </div>
+                         <form onsubmit="event.preventDefault(); handleRegister('admin', this)">
+                             <input type="text" placeholder="Full Name" class="form-input" required>
+                             <input type="email" placeholder="Email" class="form-input" required>
+                             <input type="text" placeholder="Blood Bank Name" class="form-input" required>
+                             <input type="password" placeholder="Password" class="form-input" required>
+                             <input type="password" placeholder="Confirm Password" class="form-input" required>
+                             <p class="form-error"></p>
+                             <button type="submit" class="btn btn-primary" style="width:100%;">Register</button>
+                         </form>
+                         <div class="form-links">
+                             <p>Already have an account? <a href="#" onclick="toggleRegister(false)">Login here</a></p>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

@@ -26,14 +26,17 @@ const mockData = {
         { id: 3, patient: 'Mangesh Darekar', group: 'B-', units: 1, date: '2025-09-22', status: 'rejected' },
     ],
     campaigns: [
-        { id: 1, name: 'City Hall Blood Drive', location: 'Downtown Plaza', date: '2025-10-15', status: 'Upcoming' },
-        { id: 2, name: 'Community Center Camp', location: 'Greenwood Park', date: '2025-08-10', status: 'Completed' },
+        { id: 1, name: 'City Hall Blood Drive', location: 'Downtown Plaza', date: '2025-10-15', status: 'Upcoming', unitsCollected: 0 },
+        { id: 2, name: 'Community Center Camp', location: 'Greenwood Park', date: '2025-08-10', status: 'Completed', unitsCollected: 52 },
     ],
     appointments: [
         { id: 1, date: '2025-10-02', location: 'Downtown Plaza', status: 'Confirmed', donor: 'atharv@email.com' },
     ],
     donationHistory: [
         { date: '2025-07-15', location: 'Central Hospital', units: 1, donor: 'atharv@email.com' },
+        { date: '2025-08-02', location: 'Greenwood Park', units: 1, donor: 'shreyash.s@example.com' },
+        { date: '2025-06-20', location: 'Central Hospital', units: 1, donor: 'dharam.p@example.com' },
+        { date: '2025-09-01', location: 'Downtown Plaza', units: 1, donor: 'om.s@example.com' },
     ],
     trends: [
         { month: 'Mar', donations: 80, usage: 40 }, { month: 'Apr', donations: 81, usage: 19 },
@@ -189,24 +192,49 @@ function createTable(data, headers) {
 }
 
 function renderAdminDashboard() {
+    // KPI Cards
     const totalUnits = mockData.inventory.reduce((sum, item) => sum + item.units, 0);
     const pendingRequests = mockData.requests.filter(r => r.status === 'pending').length;
     document.getElementById('admin-kpi-cards').innerHTML = `<div class="card kpi-card"><div class="card-body"><h3>Total Units</h3><p>${totalUnits}</p></div></div><div class="card kpi-card"><div class="card-body"><h3>Pending Requests</h3><p>${pendingRequests}</p></div></div><div class="card kpi-card"><div class="card-body"><h3>Registered Donors</h3><p>${mockData.donors.length}</p></div></div><div class="card kpi-card"><div class="card-body"><h3>Campaigns</h3><p>${mockData.campaigns.length}</p></div></div>`;
+    
+    // Main Dashboard Tables
     const inventoryHeaders = [{ key: 'group', label: 'Blood Group' }, { key: 'units', label: 'Units' }, { key: 'status', label: 'Status', render: (row) => `<span class="status-badge status-${row.status}">${row.status}</span>` }];
     document.getElementById('dashboard-inventory-table').innerHTML = createTable(mockData.inventory, inventoryHeaders);
+    const trendsHeaders = [{ key: 'month', label: 'Month' }, { key: 'donations', label: 'Donations (Units)' }, { key: 'usage', label: 'Usage (Units)' }];
+    document.getElementById('dashboard-trends-table').innerHTML = createTable(mockData.trends, trendsHeaders);
+
+    // Inventory Page Table
     document.getElementById('admin-inventory-table').innerHTML = createTable(mockData.inventory, inventoryHeaders);
+    
+    // Requests Page Table
     const requestHeaders = [{ key: 'patient', label: 'Patient' }, { key: 'group', label: 'Blood Group' }, { key: 'units', label: 'Units' }, { key: 'date', label: 'Date' }, { key: 'status', label: 'Status', render: (row) => `<span class="status-badge status-${row.status}">${row.status}</span>` }, { key: 'actions', label: 'Actions', render: (row) => row.status === 'pending' ? `<div style="display:flex; gap:0.5rem;"><button class="action-btn approve" onclick="handleRequestAction(${row.id}, 'approved')">Approve</button><button class="action-btn reject" onclick="handleRequestAction(${row.id}, 'rejected')">Reject</button></div>` : 'N/A' }];
     document.getElementById('admin-requests-table').innerHTML = createTable(mockData.requests, requestHeaders);
+    
+    // Management Page Tables
     const patientInfoHeaders = [{ key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'group', label: 'Blood Group' }, { key: 'phone', label: 'Contact' }];
     document.getElementById('admin-patients-info-table').innerHTML = createTable(mockData.patients, patientInfoHeaders);
     const donorInfoHeaders = [{ key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'group', label: 'Blood Group' }, { key: 'phone', label: 'Contact' }];
     document.getElementById('admin-donors-info-table').innerHTML = createTable(mockData.donors, donorInfoHeaders);
     const donorHistoryHeaders = [{ key: 'name', label: 'Donor Name' }, { key: 'group', label: 'Blood Group' }, { key: 'lastDonation', label: 'Last Donation' }, { key: 'totalDonations', label: 'Total Donations' }];
     document.getElementById('admin-donors-history-table').innerHTML = createTable(mockData.donors, donorHistoryHeaders);
+    
+    // Campaigns Page Table
     const campaignHeaders = [{ key: 'name', label: 'Name' }, { key: 'location', label: 'Location' }, { key: 'date', label: 'Date' }, { key: 'status', label: 'Status', render: (row) => `<span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span>` }];
     document.getElementById('admin-campaigns-table').innerHTML = createTable(mockData.campaigns, campaignHeaders);
-    const trendsHeaders = [{ key: 'month', label: 'Month' }, { key: 'donations', label: 'Donations (Units)' }, { key: 'usage', label: 'Usage (Units)' }];
-    document.getElementById('dashboard-trends-table').innerHTML = createTable(mockData.trends, trendsHeaders);
+
+    // Reports Page Tables
+    const donationLogData = mockData.donationHistory.map(log => {
+        const donor = mockData.donors.find(d => d.email === log.donor);
+        return {
+            ...log,
+            donorName: donor ? donor.name : 'Unknown'
+        };
+    });
+    const donationLogHeaders = [{ key: 'donorName', label: 'Donor Name'}, { key: 'date', label: 'Date'}, { key: 'location', label: 'Location'}, { key: 'units', label: 'Units Donated'}];
+    document.getElementById('report-donation-log-table').innerHTML = createTable(donationLogData, donationLogHeaders);
+
+    const campaignSummaryHeaders = [{ key: 'name', label: 'Campaign Name'}, { key: 'date', label: 'Date'}, { key: 'status', label: 'Status'}, { key: 'unitsCollected', label: 'Units Collected'}];
+    document.getElementById('report-campaign-summary-table').innerHTML = createTable(mockData.campaigns, campaignSummaryHeaders);
 }
 
 function renderPatientDashboard() {
@@ -241,7 +269,7 @@ function handleRequestAction(requestId, newStatus) {
 function handleAddCampaign(event) {
     event.preventDefault();
     const form = event.target;
-    const newCampaign = { id: mockData.campaigns.length + 1, name: form.name.value, location: form.location.value, date: form.date.value, status: 'Upcoming' };
+    const newCampaign = { id: mockData.campaigns.length + 1, name: form.name.value, location: form.location.value, date: form.date.value, status: 'Upcoming', unitsCollected: 0 };
     mockData.campaigns.push(newCampaign);
     form.reset();
     hideModal();

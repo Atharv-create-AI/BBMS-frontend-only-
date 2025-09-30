@@ -42,19 +42,118 @@ const mockData = {
     ]
 };
 
+
+/**
+ * A generic function to call the Gemini API with exponential backoff.
+ * @param {string} prompt The user prompt to send to the model.
+ * @returns {Promise<string>} The generated text from the model.
+ */
+async function callGemini(prompt) {
+    const apiKey = ""; // This will be handled by the environment.
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+    const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+    };
+
+    let attempt = 0;
+    const maxAttempts = 5;
+    while (attempt < maxAttempts) {
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                return candidate.content.parts[0].text;
+            } else {
+                return "Sorry, I couldn't generate a response for that. Please try a different prompt.";
+            }
+        } catch (error) {
+            console.error(`Gemini API call failed on attempt ${attempt + 1}:`, error);
+            attempt++;
+            if (attempt >= maxAttempts) {
+                return "The AI assistant is currently unavailable. Please try again later.";
+            }
+            const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+}
+
+// --- GEMINI MODAL UI FUNCTIONS ---
+function showGeminiModal(loadingText = "Generating...") {
+    const modal = document.getElementById('gemini-modal');
+    const loadingEl = modal.querySelector('.gemini-loading');
+    const resultsEl = modal.querySelector('#gemini-results');
+    
+    loadingEl.querySelector('p').textContent = loadingText;
+    loadingEl.style.display = 'block';
+    resultsEl.style.display = 'none';
+    resultsEl.textContent = '';
+    
+    modal.classList.add('visible');
+}
+
+function hideGeminiModal() {
+    document.getElementById('gemini-modal').classList.remove('visible');
+}
+
+function displayGeminiResult(text) {
+    const modal = document.getElementById('gemini-modal');
+    const loadingEl = modal.querySelector('.gemini-loading');
+    const resultsEl = modal.querySelector('#gemini-results');
+    
+    loadingEl.style.display = 'none';
+    resultsEl.textContent = text;
+    resultsEl.style.display = 'block';
+}
+
+// --- GEMINI FEATURE FUNCTIONS ---
+async function generateCampaignIdeas() {
+    showGeminiModal("Generating creative campaign ideas...");
+    const prompt = "Please provide 5 creative and engaging ideas for a blood donation campaign. For each idea, include a catchy slogan, a brief description of the theme, and a suggestion for a target audience (e.g., college students, office workers, general community). Format the response clearly.";
+    
+    const result = await callGemini(prompt);
+    displayGeminiResult(result);
+}
+
+async function draftDonorMessage(donorId) {
+    const donor = mockData.donors.find(d => d.id === donorId);
+    if (!donor) return;
+
+    showGeminiModal(`Drafting a message for ${donor.name}...`);
+    const prompt = `Draft a friendly and personal SMS message to a blood donor named ${donor.name}. Their blood type is ${donor.group}. Their last donation was on ${donor.lastDonation}. The message should thank them for their past donations and gently remind them that they are a valued member of our life-saving community. Keep it concise and warm. Do not ask them to donate yet, just a thank you and reminder message.`;
+    
+    const result = await callGemini(prompt);
+    displayGeminiResult(result);
+}
+
+
 // --- AUTHENTICATION & PAGE ROUTING ---
 
 function checkAuth(requiredRole) {
     const userStr = sessionStorage.getItem('currentUser');
     if (!userStr) {
-        window.location.href = 'index.html'; // Redirect if not logged in
-        return;
+        window.location.href = 'index.html';
+        return null;
     }
-    currentUser = JSON.parse(userStr);
-    if (currentUser.role !== requiredRole) {
+    const user = JSON.parse(userStr);
+    if (user.role !== requiredRole) {
         alert('Access Denied!');
         logout();
+        return null;
     }
+    return user;
 }
 
 function initializeUsers() {
@@ -199,8 +298,20 @@ function renderAdminDashboard() {
     document.getElementById('admin-requests-table').innerHTML = createTable(mockData.requests, requestHeaders);
     const patientInfoHeaders = [{ key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'group', label: 'Blood Group' }, { key: 'phone', label: 'Contact' }];
     document.getElementById('admin-patients-info-table').innerHTML = createTable(mockData.patients, patientInfoHeaders);
-    const donorInfoHeaders = [{ key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'group', label: 'Blood Group' }, { key: 'phone', label: 'Contact' }];
+    
+    const donorInfoHeaders = [
+        { key: 'name', label: 'Name' }, 
+        { key: 'email', label: 'Email' }, 
+        { key: 'group', label: 'Blood Group' }, 
+        { key: 'phone', label: 'Contact' },
+        { 
+            key: 'actions', 
+            label: 'Actions', 
+            render: (row) => `<button class="action-btn gemini" onclick="draftDonorMessage(${row.id})">✨ Draft Message</button>`
+        }
+    ];
     document.getElementById('admin-donors-info-table').innerHTML = createTable(mockData.donors, donorInfoHeaders);
+
     const donorHistoryHeaders = [{ key: 'name', label: 'Donor Name' }, { key: 'group', label: 'Blood Group' }, { key: 'lastDonation', label: 'Last Donation' }, { key: 'totalDonations', label: 'Total Donations' }];
     document.getElementById('admin-donors-history-table').innerHTML = createTable(mockData.donors, donorHistoryHeaders);
     const campaignHeaders = [{ key: 'name', label: 'Name' }, { key: 'location', label: 'Location' }, { key: 'date', label: 'Date' }, { key: 'status', label: 'Status', render: (row) => `<span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span>` }];
@@ -273,27 +384,14 @@ function handleAppointmentSubmit(event) {
 // --- EVENT LISTENERS & INITIALIZATION ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Determine the current page type
-    const isDashboard = document.body.id.includes('_dashboard');
-    const isLoginPage = window.location.pathname.includes('_login.html');
+    const bodyId = document.body.id;
 
-    if (isDashboard) {
-        const role = document.body.id.split('_')[0]; // e.g., 'admin' from 'admin_dashboard'
-        checkAuth(role);
-        if (role === 'admin') {
-            renderAdminDashboard();
-            showAdminSection('admin-dashboard-main');
-            document.getElementById('admin-menu-btn').addEventListener('click', () => {
-                document.getElementById('admin-sidebar').classList.toggle('open');
-            });
-        } else if (role === 'patient') {
-            renderPatientDashboard();
-        } else if (role === 'donor') {
-            renderDonorDashboard();
-        }
-    } else if (isLoginPage) {
-        initializeUsers();
-    } else { // For index.html
-        initializeUsers();
-    }
-});
+    if (bodyId.includes('_dashboard')) {
+        const role = bodyId.split('_')[0];
+        currentUser = checkAuth(role);
+
+        if (currentUser) {
+            if (role === 'admin') {
+                renderAdminDashboard();
+                showAdminSection('admin-dashboard-main');
+                document

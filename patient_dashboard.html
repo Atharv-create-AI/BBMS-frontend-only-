@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body id="patient-dashboard">
+<body id="patient_dashboard">
     <div>
         <header class="header">
             <div class="container">
                 <div class="logo">
-                    <div class="text-2xl font-bold text-red-600">Patient Portal</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">Patient Portal</div>
                 </div>
                 <div><button class="btn btn-primary" onclick="logout()">Logout</button></div>
             </div>
@@ -21,7 +21,7 @@
         <main class="section">
             <div class="container">
                 <h1 id="patient-welcome-message" class="section-title" style="text-align:left;">Welcome!</h1>
-                <div style="display:grid; grid-template-columns: 1fr; gap: 2rem; md:grid-template-columns: 2fr 1fr;">
+                <div style="display:grid; grid-template-columns: 1fr; gap: 2rem;">
                     <div>
                          <div class="card">
                             <div class="card-header">Request Blood</div>
@@ -44,13 +44,13 @@
                         </div>
                         <div class="card">
                             <div class="card-header">My Request History</div>
-                            <div class="card-body"><div class="table-container"><table id="patient-requests-table"></table></div></div>
+                            <div class="card-body"><div class="table-container"><div id="patient-requests-table"></div></div></div>
                         </div>
                     </div>
                     <div>
                         <div class="card">
                             <div class="card-header">Available Blood Stock</div>
-                            <div class="card-body"><div class="table-container"><table id="patient-inventory-table"></table></div></div>
+                            <div class="card-body"><div class="table-container"><div id="patient-inventory-table"></div></div></div>
                         </div>
                     </div>
                 </div>
@@ -59,6 +59,5 @@
     </div>
     <script src="script.js"></script>
 </body>
-</html>
-
+    </html>
     

@@ -317,7 +317,9 @@ th {
     margin-bottom: 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    font-size: 1rem; /* Added for better readability */
 }
+
 .form-error {
     color: var(--primary-color);
     font-size: 0.875rem;
@@ -334,6 +336,19 @@ th {
     color: var(--primary-color);
     font-weight: 600;
     text-decoration: none;
+}
+
+/* Grid form for multi-column layouts */
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: end;
+}
+@media (min-width: 1024px) {
+    .grid-form {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 

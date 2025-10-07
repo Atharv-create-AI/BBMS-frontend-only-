@@ -276,6 +276,40 @@ function handleAddCampaign(event) {
     renderAdminDashboard();
 }
 
+function handleAddDonor(event) {
+    event.preventDefault();
+    const form = event.target;
+
+    // Check if a donor with the same email already exists to prevent duplicates.
+    if (mockData.donors.some(d => d.email === form.email.value)) {
+        alert('A donor with this email already exists.');
+        return;
+    }
+
+    const newDonor = {
+        id: mockData.donors.length + 1,
+        name: form.name.value,
+        email: form.email.value,
+        group: form.group.value,
+        phone: form.phone.value,
+        lastDonation: form.lastDonation.value,
+        totalDonations: parseInt(form.totalDonations.value, 10)
+    };
+    mockData.donors.push(newDonor);
+
+    // Also create a corresponding record in the donation history log.
+    mockData.donationHistory.push({
+        date: form.lastDonation.value,
+        location: 'Admin Manual Entry',
+        units: parseInt(form.totalDonations.value, 10),
+        donor: form.email.value
+    });
+
+    form.reset();
+    renderAdminDashboard(); // Re-render all admin tables to reflect the new data.
+    alert('New donor added successfully!');
+}
+
 function handlePatientRequest(event) {
     event.preventDefault();
     if(!currentUser) return;
@@ -325,4 +359,3 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeUsers();
     }
 });
-         

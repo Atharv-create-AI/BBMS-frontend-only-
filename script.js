@@ -10,15 +10,15 @@ const mockData = {
         { group: 'O+', units: 45, status: 'available' }, { group: 'O-', units: 22, status: 'available' },
     ],
     donors: [
-        { id: 1, name: 'Atharv Gaikwad', email: 'atharv@email.com', group: 'A+', phone: '123-456-7890', lastDonation: '2025-07-15', totalDonations: 5 },
-        { id: 2, name: 'Shreyash Shendage', email: 'shreyash.s@example.com', group: 'O-', phone: '987-654-3210', lastDonation: '2025-08-02', totalDonations: 8 },
-        { id: 3, name: 'Dharam Pote', email: 'dharam.p@example.com', group: 'B+', phone: '555-123-4567', lastDonation: '2025-06-20', totalDonations: 3 },
-        { id: 4, name: 'Om Shinde', email: 'om.s@example.com', group: 'AB+', phone: '555-987-6543', lastDonation: '2025-09-01', totalDonations: 12 },
+        { id: 1, name: 'Atharv Gaikwad', email: 'atharv@email.com', group: 'A+', phone: '12304567890', lastDonation: '2025-07-15', totalDonations: 5 },
+        { id: 2, name: 'Shreyash Shendage', email: 'shreyash.s@example.com', group: 'O-', phone: '98796543210', lastDonation: '2025-08-02', totalDonations: 8 },
+        { id: 3, name: 'Dharam Pote', email: 'dharam.p@example.com', group: 'B+', phone: '55561234567', lastDonation: '2025-06-20', totalDonations: 3 },
+        { id: 4, name: 'Om Shinde', email: 'om.s@example.com', group: 'AB+', phone: '555-987-6543', lastDonation:  </html>'2025-09-01', totalDonations: 12 },
     ],
     patients: [
-         { id: 1, name: 'Shubham Hole', email: 'shubham@email.com', group: 'A-', phone: '876-543-2109' },
-         { id: 2, name: 'Yshodeep Khatate', email: 'yshodeep.k@example.com', group: 'O+', phone: '765-432-1098' },
-         { id: 3, name: 'Mangesh Darekar', email: 'mangesh.d@example.com', group: 'B-', phone: '654-321-0987' },
+         { id: 1, name: 'Shubham Hole', email: 'shubham@email.com', group: 'A-', phone: '87685432109' },
+         { id: 2, name: 'Yshodeep Khatate', email: 'yshodeep.k@example.com', group: 'O+', phone: '76584321098' },
+         { id: 3, name: 'Mangesh Darekar', email: 'mangesh.d@example.com', group: 'B-', phone: '65432180987' },
     ],
     requests: [
         { id: 1, patient: 'Shubham Hole', group: 'A-', units: 2, date: '2025-09-25', status: 'pending' },
